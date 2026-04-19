@@ -13,11 +13,17 @@ dataset_final/
 # Face data
 known_faces/
 unknown_faces/
+models/
 
-# Images
+# Images (ignore everywhere except screenshots folder)
 *.jpg
 *.jpeg
 *.png
+
+!screenshots/
+!screenshots/*.jpg
+!screenshots/*.jpeg
+!screenshots/*.png
 
 # Output files
 attendance.xlsx
