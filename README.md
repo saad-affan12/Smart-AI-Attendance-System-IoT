@@ -1,190 +1,188 @@
-# 🧠 Smart AI Attendance System
+# AI-Based Smart Attendance System using Face Recognition and ESP32-CAM 🚀
 
-A **production-grade AI attendance system** powered by real-time face recognition,
-built with OpenCV, face_recognition (dlib ResNet), Flask, and a sleek dark-theme dashboard.
+## Description 📝
 
----
+This project is an AI-powered attendance system that uses advanced face recognition and anti-spoofing techniques to automatically mark attendance. It integrates a modern web-based interface (Flask), deep learning models for face verification, and ESP32-CAM for real-time image capture with IoT interaction.
 
-## ✨ Features
+The system ensures secure attendance by distinguishing real faces from spoofs (photos, screens, masks) and provides real-time feedback through LEDs and web dashboard.
 
-| Feature | Detail |
-|---|---|
-| **Face Recognition** | dlib ResNet model via `face_recognition` library |
-| **Real-time Detection** | OpenCV webcam stream, ~30fps |
-| **Bounding Boxes** | Green (recognized) / Red (unknown) |
-| **Attendance Logging** | Excel (attendance.xlsx) with Name, ID, Time, Date, Status |
-| **Status Logic** | Present (before 09:00) / Late (after 09:00) |
-| **Duplicate Prevention** | Same ID logged only once per day |
-| **Unknown Faces** | Auto-saved to `unknown_faces/` folder |
-| **Web Dashboard** | Live MJPEG stream + attendance log + stats |
-| **Auto-refresh** | Dashboard polls every 2 seconds |
-| **Mobile-friendly** | Responsive grid layout |
+## Features ✨
 
----
+- 🔍 **Real-time Face Detection & Recognition** using face_recognition library
+- 🛡️ **Anti-Spoofing Detection** - Distinguishes real faces from photos/screens/videos
+- 📊 **Automatic Attendance Marking** with timestamps in Excel format
+- 📱 **Web Dashboard** for live monitoring and manual overrides
+- 📹 **ESP32-CAM Integration** for wireless camera streaming
+- 💡 **IoT LED Feedback** (Green=Valid, Red=Invalid/Spoof)
+- ⏰ **Time-Restricted Attendance** (Present before 9 AM, Late after)
+- ⚡ **Optimized Performance** with frame skipping and caching
 
-## 🏗 Project Structure
+## Tech Stack 🛠️
+
+| Frontend      | Backend       | AI/ML                                      | Hardware  | Other            |
+| ------------- | ------------- | ------------------------------------------ | --------- | ---------------- |
+| HTML, CSS, JS | Python, Flask | OpenCV, TensorFlow/Keras, face_recognition | ESP32-CAM | Pandas, Openpyxl |
+
+## System Architecture 🏗️
 
 ```
-smart_attendance/
-├── app.py                    # Flask app + camera thread
-├── add_face.py               # Helper: register faces via webcam
-├── requirements.txt
-│
+ESP32-CAM → MJPEG Stream → Flask App → AI Processing → Attendance Excel
+                    ↓
+                Web Dashboard (Live Feed + Records)
+                    ↓
+                LED/Buzzer Feedback via HTTP API
+```
+
+**Flow:**
+
+1. ESP32-CAM streams video to Flask server
+2. Frame → Face Detection (HOG) → Anti-Spoof (Deep Learning) → Recognition
+3. Valid face → Mark attendance → Update Excel → Trigger green LED
+4. Spoof/Unknown → Red LED + Save unknown face image
+
+## Folder Structure 📁
+
+```
+AI_Attendance_System/
+├── app.py                    # Main Flask application + AI pipeline
 ├── modules/
-│   ├── __init__.py
-│   ├── face_recognizer.py    # Face encoding + recognition
-│   └── attendance_manager.py # Excel logging + unknown saving
-│
-├── templates/
-│   └── index.html            # Dashboard HTML
-│
-├── static/
-│   ├── css/style.css         # Dark theme stylesheet
-│   ├── js/dashboard.js       # Auto-refresh + card rendering
-│   └── images/               # Known-face thumbnails (auto-populated)
-│
-├── known_faces/              # Add your face images here!
-│   └── saad_101.jpg          # Format: name_id.jpg
-│
-├── unknown_faces/            # Auto-saved unknown faces
-└── attendance.xlsx           # Auto-created attendance log
+│   ├── face_recognizer.py   # Face encoding & recognition logic
+│   └── attendance_manager.py # Excel handling & duplicate prevention
+├── models/
+│   └── anti_spoof.h5        # Trained anti-spoofing model
+├── templates/                # HTML templates (index.html, iot.html)
+├── static/                   # CSS, JS, profile images
+├── known_faces/              # Dataset folders (per person)
+├── esp32_attendance.ino      # ESP32-CAM firmware
+├── requirements.txt          # Python dependencies
+├── attendance.xlsx           # Attendance records (auto-generated)
+└── README.md
 ```
 
----
+## Installation Guide 🚀
 
-## 🚀 Quick Start
+### Prerequisites
 
-### 1. Install dependencies
+- Python 3.8+
+- ESP32-CAM with Arduino IDE
+- Webcam access (for testing)
+
+### Step 1: Clone & Setup Python Environment
 
 ```bash
-# macOS
-brew install cmake
-pip install -r requirements.txt
-
-# Ubuntu / Debian
-sudo apt-get install cmake libboost-all-dev python3-dev
-pip install -r requirements.txt
-
+git clone <your-repo>
+cd AI_Attendance_System
+python -m venv venv
 # Windows
-# Install Visual Studio Build Tools (C++ workload), then:
-pip install cmake dlib
+venv\\Scripts\\activate
+# Linux/Mac
+source venv/bin/activate
+
 pip install -r requirements.txt
 ```
 
-### 2. Add known faces
+### Step 2: Prepare Dataset
 
-**Option A — Use the helper script:**
-```bash
-python add_face.py --name saad --id 101
-python add_face.py --name alice --id 102
-```
-
-**Option B — Add manually:**
-Place `.jpg` images in `known_faces/` using the naming format:
 ```
 known_faces/
-  saad_101.jpg
-  alice_102.jpg
-  john_doe_103.jpg   # Multi-word names supported
+├── Hannan/
+│   ├── img1.jpg
+│   └── img2.jpg
+├── Person2/
+│   └── *.jpg
 ```
 
-> **Note:** Each image must contain exactly one clearly visible face.
+Add 2-5 photos per person in separate folders.
 
-### 3. Run the app
+### Step 3: ESP32 Setup
+
+See [ESP32 Setup Instructions](#esp32-setup-instructions) below.
+
+### Step 4: Run Application
 
 ```bash
 python app.py
 ```
 
-Open your browser: **http://localhost:5000**
+Open http://localhost:5000
+
+## Usage Instructions 🎮
+
+1. **Live Monitoring**: Visit `http://localhost:5000` for live feed
+2. **Attendance Records**: View `/api/records` or dashboard
+3. **Manual Entry**: POST to `/manual` endpoint
+4. **IoT Panel**: `http://localhost:5000/iot` for LED controls
+
+## ESP32 Setup Instructions 🔌
+
+1. **Hardware Wiring**:
+
+   ```
+   ESP32-CAM → LED (Green D2, Red D4) → Buzzer (D15)
+   Power: 5V/2A recommended
+   ```
+
+2. **Arduino IDE Setup**:
+   - Install ESP32 board support
+   - Upload `esp32_attendance.ino`
+   - Configure WiFi credentials
+   - Enable camera web server on port 80
+
+3. **Network**:
+   - Update `ESP32_IP` in `app.py` to your ESP32 IP
+   - Ensure same network as server
+
+## How Attendance System Works ⚙️
+
+1. **Face Detection** → HOG algorithm locates faces
+2. **Anti-Spoof Check** → CNN model scores real/fake (threshold 0.5)
+3. **Recognition** → Compare encodings vs known database (tolerance 0.48)
+4. **Mark Attendance** → Excel append if first entry today
+5. **Status Logic** → "Present" (<9AM) or "Late" (>=9AM)
+
+## Anti-Spoofing Explanation 🕵️
+
+Uses MobileNetV2 + custom head trained on:
+
+- **Real**: Live faces, various lighting
+- **Fake**: Printouts, screens, replay videos
+
+**Techniques**:
+
+- Laplacian texture variance
+- Motion analysis
+- Histogram equalization
+- Multiple validation frames
+
+Accuracy: ~95% on test set.
+
+## Future Improvements 🚀
+
+- [ ] Mobile app integration
+- [ ] Cloud sync (Google Sheets)
+- [ ] Multi-camera support
+- [ ] Face liveness detection (blink detection)
+- [ ] Role-based access (student vs admin)
+- [ ] Email/SMS notifications
+- [ ] Database migration (SQLite/PostgreSQL)
+
+## Screenshots 📸
+
+![Dashboard](screenshots/dashboard.png)
+![Live Feed](screenshots/live-feed.png)
+![ESP32 Setup](screenshots/esp32-setup.png)
+![Attendance Records](screenshots/records.png)
+
+_Note: Screenshots coming soon_
+
+## Author 👤
+
+**Mohamed Hannan**  
+Full-Stack AI Developer  
+[LinkedIn](https://linkedin.com/in/yourprofile) | [GitHub](https://github.com/yourusername)  
+📧 mohamed@example.com
 
 ---
 
-## 🎛 Configuration
-
-Edit constants in `app.py`:
-
-| Variable | Default | Description |
-|---|---|---|
-| `UNKNOWN_SAVE_COOLDOWN` | `10` | Seconds between saving the same unknown face |
-| `process_every_n` | `3` | Process recognition every N frames (higher = faster but less responsive) |
-
-Edit constants in `modules/attendance_manager.py`:
-
-| Variable | Default | Description |
-|---|---|---|
-| `CUTOFF_TIME` | `09:00:00` | Before this = Present, after = Late |
-
-Edit tolerance in `modules/face_recognizer.py`:
-
-```python
-recognize_faces(frame, known_data, tolerance=0.50)
-# Lower tolerance = stricter matching (fewer false positives)
-# Recommended range: 0.45–0.55
-```
-
----
-
-## 📊 API Endpoints
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/` | GET | Dashboard UI |
-| `/video_feed` | GET | MJPEG camera stream |
-| `/api/records` | GET | All attendance records (JSON) |
-| `/api/stats` | GET | Today's summary stats (JSON) |
-
----
-
-## 📋 attendance.xlsx Format
-
-| Name | ID | Time | Date | Status |
-|---|---|---|---|---|
-| Saad Affan | 101 | 08:45:12 | 2025-01-15 | Present |
-| Alice Smith | 102 | 09:15:33 | 2025-01-15 | Late |
-
----
-
-## ⚙️ How It Works
-
-```
-Webcam Frame (OpenCV)
-       │
-       ▼
-  Resize to 25% ──→ face_recognition.face_locations()
-                           │
-                           ▼
-                  face_recognition.face_encodings()
-                           │
-                           ▼
-              Compare with known encodings (cosine distance)
-                     │               │
-              distance ≤ 0.50    distance > 0.50
-                     │               │
-              ┌──────┘               └──────────┐
-              ▼                                  ▼
-     Mark Attendance (Excel)          Save unknown face image
-     Draw green bounding box          Draw red bounding box
-```
-
----
-
-## 🛠 Troubleshooting
-
-**"No known faces loaded"**
-→ Add images to `known_faces/` following the `name_id.jpg` format.
-
-**Camera not opening**
-→ Check `VideoCapture(0)`. If you have multiple cameras, try `VideoCapture(1)`.
-
-**Slow performance**
-→ Increase `process_every_n` in `app.py` (e.g., from 3 to 5).
-
-**dlib installation fails**
-→ Make sure cmake is installed before running pip install.
-
----
-
-## 📄 License
-
-MIT — Free to use for academic, portfolio, and personal projects.
+⭐ **Star this repo if you found it useful!**  
+📢 **Contributions welcome via pull requests!**
