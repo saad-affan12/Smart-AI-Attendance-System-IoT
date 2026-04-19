@@ -113,24 +113,93 @@ Open http://localhost:5000
 3. **Manual Entry**: POST to `/manual` endpoint
 4. **IoT Panel**: `http://localhost:5000/iot` for LED controls
 
-## ESP32 Setup Instructions 🔌
+## Hardware Setup and ESP32 Integration ⚙️
 
-1. **Hardware Wiring**:
+### 1. Hardware Components Used 🛒
+
+- **ESP32-CAM (AI Thinker)** - Main camera module
+- **FTDI Programmer (USB to Serial)** - For code upload
+- **Breadboard** - Prototyping
+- **Jumper Wires** - Connections
+- **Green LED** - Valid attendance indicator
+- **Red LED** - Invalid/spoof detection
+- **Buzzer** - Alert feedback
+- **External Power Supply (5V)** - Stable power
+
+### 2. ESP32-CAM to FTDI Wiring Table 🔌
+
+| ESP32-CAM Pin | FTDI Pin | Notes                  |
+| ------------- | -------- | ---------------------- |
+| GND           | GND      | Ground                 |
+| 5V            | VCC (5V) | **5V power required**  |
+| U0R (GPIO3)   | TX       | Receive                |
+| U0T (GPIO1)   | RX       | Transmit               |
+| GPIO 0        | GND      | **Flashing mode only** |
+
+### 3. Important Notes ⚠️
+
+- ✅ **GPIO 0 to GND during upload only**
+- ❌ **Remove GPIO 0 connection after upload**
+- 🔋 **Use stable 5V/2A power supply**
+- ⚠️ **Never use 3.3V for ESP32-CAM power**
+- 📶 **Stable WiFi connection required**
+
+### 4. Pin Configuration Used in Project 📍
+
+| Component     | GPIO Pin | Function           |
+| ------------- | -------- | ------------------ |
+| **GREEN_LED** | GPIO 2   | Valid attendance ✓ |
+| **RED_LED**   | GPIO 14  | Invalid/spoof ✗    |
+| **BUZZER**    | GPIO 12  | Alert sound        |
+
+**LED Logic**:
+
+- **Green ON** = Attendance marked successfully
+- **Red ON** = Invalid face or spoof detected
+- **Buzzer** = Invalid detection alert
+
+### 5. Working Flow of Hardware 🔄
+
+1. **ESP32 captures MJPEG stream**
+2. **Flask receives frames** for AI processing
+3. **AI Pipeline**:
+   - Face detection → Anti-spoof → Recognition
+4. **Feedback based on result**:
+   ```
+   VALID → Green LED ON (3s)
+   INVALID → Red LED + Buzzer (2s)
+   SPOOF → Red LED + Buzzer + Log
+   ```
+
+### 6. Code Upload Instructions 💻
+
+1. **Arduino IDE Setup**:
 
    ```
-   ESP32-CAM → LED (Green D2, Red D4) → Buzzer (D15)
-   Power: 5V/2A recommended
+   Tools → Board → AI Thinker ESP32-CAM
+   Tools → Port → Your COM port
    ```
 
-2. **Arduino IDE Setup**:
-   - Install ESP32 board support
-   - Upload `esp32_attendance.ino`
-   - Configure WiFi credentials
-   - Enable camera web server on port 80
+2. **Upload Process**:
+   ```
+   1. Connect GPIO 0 to GND
+   2. Press IO0 + RST buttons (hold)
+   3. Release RST, keep IO0 pressed
+   4. Click UPLOAD in Arduino IDE
+   5. Wait for "Hard Reset" message
+   6. Remove GPIO 0-GND connection
+   7. Press RST to run
+   ```
 
-3. **Network**:
-   - Update `ESP32_IP` in `app.py` to your ESP32 IP
-   - Ensure same network as server
+### 7. Visual Guides 📷
+
+![Wiring Diagram](screenshots/ESP32_FTDI.png)
+![Hardware Setup](screenshots/Wiring1.png)
+![Hardware Setup](screenshots/wiring3.png)
+![Final Assembly](screenshots/model1.png)
+![Final Assembly](screenshots/model2.png)
+
+**Pro Tip**: Test LED control via `http://YOUR_ESP_IP/green`
 
 ## How Attendance System Works ⚙️
 
@@ -169,18 +238,18 @@ Accuracy: ~95% on test set.
 ## Screenshots 📸
 
 ![Dashboard](screenshots/dashboard.png)
-![Live Feed](screenshots/live-feed.png)
-![ESP32 Setup](screenshots/esp32-setup.png)
-![Attendance Records](screenshots/records.png)
+![Live Feed](screenshots/demo1.png)
+![ESP32 Setup](screenshots/ESP32_FTDI.png)
+![Attendance Records](screenshots/demo1.png)
 
 _Note: Screenshots coming soon_
 
 ## Author 👤
 
-**Mohamed Hannan**  
+**Mohamed Hannan N**  
 Full-Stack AI Developer  
-[LinkedIn](https://linkedin.com/in/yourprofile) | [GitHub](https://github.com/yourusername)  
-📧 mohamed@example.com
+[LinkedIn](https://www.linkedin.com/in/mohamed-hannan-9703763a0/) | [GitHub](https://github.com/Hannan01-nil)  
+📧 mohamedhannan01@gmail.com
 
 ---
 
