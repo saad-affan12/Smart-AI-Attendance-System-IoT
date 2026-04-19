@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+venv_broken_*/
+
+# Datasets
+dataset/
+dataset_final/
+
+# Face data
+known_faces/
+unknown_faces/
+
+# Images
+*.jpg
+*.jpeg
+*.png
+
+# Output files
+attendance.xlsx
+
+# VS Code
+.vscode/
+
+# Logs
+*.log

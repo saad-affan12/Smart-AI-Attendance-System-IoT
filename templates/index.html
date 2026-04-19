@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Attendance System</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f5f6f7;
+      --panel:#ffffff;
+      --muted:#6b7280;
+      --accent:#1e88e5;
+      --success:#16a34a;
+      --warning:#f59e0b;
+      --radius:12px;
+      --shadow: 0 8px 20px rgba(16,24,40,0.06);
+      --soft-shadow: 0 4px 12px rgba(16,24,40,0.04);
+      --max-width:1100px;
+      --transition: 240ms cubic-bezier(.2,.9,.3,1);
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color-scheme: light;
+    }
+
+    html,body{height:100%;margin:0;background:var(--bg);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:#0f172a;font-size:16px;line-height:1.3}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;box-sizing:border-box}
+    .container{width:100%;max-width:var(--max-width);margin:0 auto}
+    header.header{display:flex;align-items:center;justify-content:center;padding:18px 24px}
+    .title{background:linear-gradient(90deg,var(--panel),var(--panel));padding:10px 20px;border-radius:999px;box-shadow:var(--soft-shadow)}
+    .title h1{margin:0;font-size:20px;font-weight:600;letter-spacing:0.2px;color:#0b1220}
+    .main{display:grid;grid-template-columns: 1fr 360px;gap:24px;align-items:start;margin-top:18px}
+    .card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .video-card{display:flex;flex-direction:column;min-height:320px}
+    .video-stage{position:relative;width:100%;padding-top:56.25%;background:#000}
+    .video-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#000;transition:filter var(--transition), transform var(--transition)}
+    .video-card .caption{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;color:var(--muted);font-size:13px;border-top:1px solid rgba(15,23,42,0.04)}
+    .info-card{padding:20px;display:flex;flex-direction:column;gap:14px;min-height:240px;box-sizing:border-box}
+    .info-header{display:flex;align-items:center;justify-content:space-between}
+    .info-header .label{font-size:13px;color:var(--muted);font-weight:600;letter-spacing:0.4px}
+    .info-body{display:flex;flex-direction:column;gap:8px}
+    .person{display:flex;align-items:center;gap:12px}
+    .avatar{width:64px;height:64px;border-radius:10px;background:linear-gradient(180deg, rgba(14,165,233,0.08), rgba(16,24,40,0.02));display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--accent);font-size:18px;border:1px solid rgba(16,24,40,0.03);box-shadow:var(--soft-shadow);flex-shrink:0}
+    .meta{display:flex;flex-direction:column;gap:4px}
+    .meta .name{font-size:18px;font-weight:700;color:#07102a}
+    .meta .id{font-size:13px;color:var(--muted)}
+    .status-row{display:flex;align-items:center;gap:12px;margin-top:6px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:600;font-size:13px;color:white;transition:background var(--transition), transform var(--transition);box-shadow: 0 6px 18px rgba(16,24,40,0.06)}
+    .pill.present{ background:var(--success); }
+    .pill.late{ background:var(--warning); color:#111827; }
+    .time-date{display:flex;flex-direction:column;gap:2px;margin-left:auto;text-align:right;color:var(--muted);font-size:13px}
+    .time-date .time{font-size:16px;font-weight:700;color:#07102a}
+    .info-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .info-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:linear-gradient(180deg, rgba(250,250,250,1), rgba(245,246,250,1));border:1px solid rgba(15,23,42,0.03);transition:transform var(--transition), box-shadow var(--transition)}
+    .info-item .k{ color:var(--muted); font-weight:600; font-size:13px }
+    .info-item .v{ color:#07102a; font-weight:700; font-size:14px }
+    .flash{ transform:translateY(-6px); box-shadow: 0 18px 40px rgba(16,24,40,0.08) }
+    .card:hover .video-stage img{ transform:scale(1.01); filter:brightness(1.02) }
+    .info-card .info-item:hover{ transform:translateY(-4px) }
+    @media (max-width:880px){ .main{ grid-template-columns: 1fr } .info-card{ order:2 } .video-card{ order:1 } }
+    .muted{ color:var(--muted); font-size:13px }
+    .center{ display:flex; align-items:center; justify-content:center }
+  </style>
+
+</head>
+<body>
+  <div class="wrap">
+    <div class="container">
+      <header class="header">
+        <div class="title" role="banner" aria-label="AI Attendance System">
+          <h1>AI Attendance System</h1>
+        </div>
+      </header>
+
+      <main class="main" role="main" aria-live="polite">
+        <!-- Live stream panel -->
+        <section class="card video-card" aria-label="Live camera feed">
+          <div class="video-stage" title="Live camera">
+            <img id="liveStream" src="/video_feed" alt="Live camera stream">
+          </div>
+
+          <div class="caption muted">Live ESP32-CAM • Stream served from server</div>
+        </section>
+
+        <!-- Info card -->
+        <aside class="card info-card" aria-label="Attendance information">
+          <div class="info-header">
+            <div class="label">Latest Detection</div>
+            <div class="muted" id="last-updated">—</div>
+          </div>
+
+          <div class="info-body">
+            <div class="person">
+              <div class="avatar" id="avatar">—</div>
+
+              <div class="meta">
+                <div class="name" id="person-name">Waiting</div>
+                <div class="id" id="person-id">ID: —</div>
+
+                <div class="status-row">
+                  <div id="status-pill" class="pill present" aria-live="polite">—</div>
+                  <div class="time-date">
+                    <div class="time" id="person-time">--:--:--</div>
+                    <div class="muted" id="person-date">YYYY-MM-DD</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-list" aria-hidden="false">
+              <div class="info-item" id="info-name">
+                <div class="k">Name</div>
+                <div class="v" id="info-name-value">Waiting</div>
+              </div>
+
+              <div class="info-item" id="info-id">
+                <div class="k">ID</div>
+                <div class="v" id="info-id-value">—</div>
+              </div>
+
+              <div class="info-item" id="info-status">
+                <div class="k">Status</div>
+                <div class="v" id="info-status-value">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:16px 20px 22px; border-top:1px solid rgba(15,23,42,0.04); display:flex; justify-content:center;">
+            <div class="muted" style="font-size:13px;">System running • minimal, professional UI</div>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const POLL_INTERVAL = 1500;
+      const elName = document.getElementById('person-name');
+      const elId = document.getElementById('person-id');
+      const elTime = document.getElementById('person-time');
+      const elDate = document.getElementById('person-date');
+      const elAvatar = document.getElementById('avatar');
+      const elStatusPill = document.getElementById('status-pill');
+      const elInfoName = document.getElementById('info-name-value');
+      const elInfoId = document.getElementById('info-id-value');
+      const elInfoStatus = document.getElementById('info-status-value');
+      const elLastUpdated = document.getElementById('last-updated');
+      let lastData = {};
+
+      function niceInitials(name){
+        if(!name) return '—';
+        const parts = name.trim().split(/\s+/);
+        if(parts.length === 1) return (parts[0][0]||'').toUpperCase();
+        return ((parts[0][0]||'') + (parts[parts.length-1][0]||'')).toUpperCase();
+      }
+
+      function setStatusClass(status){
+        elStatusPill.classList.remove('present','late');
+        if(!status) { elStatusPill.classList.add('present'); return; }
+        const s = String(status).toLowerCase();
+        if(s.includes('late')) elStatusPill.classList.add('late');
+        else elStatusPill.classList.add('present');
+      }
+
+      function applyUpdate(data){
+        const name = data.name || 'Waiting';
+        const id = data.id || '—';
+        const status = data.status || '—';
+        const time = data.time || '--:--:--';
+        const date = data.date || '----/--/--';
+
+        if(lastData.name !== name){ elName.textContent = name; elInfoName.textContent = name; elAvatar.textContent = niceInitials(name); elAvatar.classList.add('flash'); setTimeout(()=>elAvatar.classList.remove('flash'), 400); }
+        if(lastData.id !== id){ elId.textContent = 'ID: ' + id; elInfoId.textContent = id; const node = document.getElementById('info-id'); node.classList.add('flash'); setTimeout(()=>node.classList.remove('flash'), 320); }
+        if(lastData.status !== status){ elStatusPill.textContent = status; elInfoStatus.textContent = status; setStatusClass(status); elStatusPill.classList.add('flash'); setTimeout(()=>elStatusPill.classList.remove('flash'), 420); }
+        if(lastData.time !== time){ elTime.textContent = time; const node = document.getElementById('info-name'); node.classList.add('flash'); setTimeout(()=>node.classList.remove('flash'), 260); }
+        if(lastData.date !== date){ elDate.textContent = date; }
+
+        elLastUpdated.textContent = new Date().toLocaleTimeString();
+        lastData = {name,id,status,time,date};
+      }
+
+      async function fetchLatest(){
+        try{ const res = await fetch('/api/latest', {cache:'no-store'}); if(!res.ok) throw new Error('Network'); const data = await res.json(); applyUpdate(data); }catch(e){ elLastUpdated.textContent = 'offline'; }
+      }
+
+      fetchLatest();
+      const poller = setInterval(fetchLatest, POLL_INTERVAL);
+      window.addEventListener('beforeunload', ()=> clearInterval(poller));
+    })();
+  </script>
+</body>
+</html>

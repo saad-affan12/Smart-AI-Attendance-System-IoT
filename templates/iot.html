@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IoT Display</title>
+
+<style>
+body {
+  margin:0;
+  background:black;
+  color:white;
+  font-family:sans-serif;
+  text-align:center;
+}
+
+.container {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+video, img {
+  width:90%;
+  max-width:500px;
+  border-radius:10px;
+}
+
+.name { font-size:28px; margin-top:10px; }
+.id { font-size:20px; color:gray; }
+.status { font-size:26px; margin-top:10px; }
+
+.present { color:lime; }
+.late { color:orange; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- CAMERA -->
+  <img src="/video_feed" alt="ESP32 camera stream">
+
+  <!-- STATUS -->
+  <div class="name" id="name">Waiting...</div>
+  <div class="id" id="id"></div>
+  <div class="status" id="status"></div>
+  <div id="time"></div>
+  <div id="date"></div>
+
+</div>
+
+<script>
+async function update(){
+  const res = await fetch('/api/latest');
+  const d = await res.json();
+
+  document.getElementById("name").innerText = d.name;
+  document.getElementById("id").innerText = d.id;
+  document.getElementById("status").innerText = d.status;
+  document.getElementById("time").innerText = d.time;
+  document.getElementById("date").innerText = d.date;
+
+  const statusEl = document.getElementById("status");
+  statusEl.className = "status " + d.status.toLowerCase();
+}
+
+setInterval(update, 1000);
+</script>
+
+</body>
+</html>
