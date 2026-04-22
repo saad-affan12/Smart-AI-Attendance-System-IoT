@@ -31,11 +31,43 @@ The system ensures secure attendance by distinguishing real faces from spoofs (p
 
 ---
 
-## Tech Stack 🛠️
+## 🧰 Tech Stack 🛠️
 
-| Frontend      | Backend       | AI/ML                                | Hardware  | Other            |
-| ------------- | ------------- | ------------------------------------ | --------- | ---------------- |
-| HTML, CSS, JS | Python, Flask | OpenCV, TensorFlow, face_recognition | ESP32-CAM | Pandas, Openpyxl |
+### 🎨 Frontend
+<p>
+  <img src="https://skillicons.dev/icons?i=html,css,js" />
+</p>
+
+---
+
+### ⚙️ Backend
+<p>
+  <img src="https://skillicons.dev/icons?i=python,flask" />
+</p>
+
+---
+
+### 🧠 AI / Machine Learning
+<p>
+  <img src="https://skillicons.dev/icons?i=tensorflow,opencv" />
+  <img src="https://img.shields.io/badge/face_recognition-AI-red?style=for-the-badge"/>
+</p>
+
+---
+
+### 📡 IoT Hardware
+<p>
+  <img src="https://img.shields.io/badge/ESP32--CAM-IoT-orange?style=for-the-badge&logo=espressif"/>
+</p>
+
+---
+
+### 📦 Data & Utilities
+<p>
+  <img src="https://skillicons.dev/icons?i=python" />
+  <img src="https://img.shields.io/badge/Pandas-Data_Processing-blue?style=for-the-badge&logo=pandas"/>
+  <img src="https://img.shields.io/badge/Openpyxl-Excel-green?style=for-the-badge"/>
+</p>
 
 ---
 
