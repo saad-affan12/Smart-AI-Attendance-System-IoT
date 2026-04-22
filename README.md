@@ -69,7 +69,7 @@ AI_Attendance_System/
 ---
 
 ## 🚀 Installation
-
+~~~
 bash
 git clone <your-repo>
 cd AI_Attendance_System
@@ -79,6 +79,7 @@ venv\Scripts\activate
 
 pip install -r requirements.txt
 python app.py
+~~~
 
 🔌 Hardware Setup & ESP32 Integration
 🧰 Components
