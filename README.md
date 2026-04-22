@@ -70,7 +70,7 @@ AI_Attendance_System/
 
 ## 🚀 Installation
 
-````bash
+bash
 git clone <your-repo>
 cd AI_Attendance_System
 
@@ -237,7 +237,16 @@ Open http://localhost:5000
 
 ### 7. Visual Guides 📷
 
-<p align="center"> <img src="screenshots/ESP32_FTDI.png" width="400"/> </p> <p align="center"> <img src="screenshots/Wiring1.png" width="400"/> <img src="screenshots/Wiring3.png" width="400"/> </p> <p align="center"> <img src="screenshots/model1.png" width="350"/> <img src="screenshots/model2.png" width="350"/> </p>
+<p align="center">
+  <img src="screenshots/ESP32_FTDI.png" style="width: 32%; margin: 5px;"/>
+  <img src="screenshots/Wiring1.png" style="width: 32%; margin: 5px;"/>
+  <img src="screenshots/Wiring3.png" style="width: 32%; margin: 5px;"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/model1.png" style="width: 48%; margin: 5px;"/>
+  <img src="screenshots/model2.png" style="width: 48%; margin: 5px;"/>
+</p>
 
 **Pro Tip**: Test LED control via `http://YOUR_ESP_IP/green`
 
@@ -279,12 +288,31 @@ Accuracy: ~95% on test set.
 
 <p align="center"> <img src="screenshots/dashboard.png" width="45%"/> <img src="screenshots/demo1.png" width="45%"/> </p> <p align="center"> <img src="screenshots/ESP32_FTDI.png" width="45%"/> </p>
 
-## Author 👤
+## 👨‍💻 Team
 
-**Mohamed Hannan N**  
-Full-Stack AI Developer  
-[LinkedIn](https://www.linkedin.com/in/mohamed-hannan-9703763a0/) | [GitHub](https://github.com/Hannan01-nil)  
-📧 mohamedhannan01@gmail.com
+### 🚀 Core Development Team
+
+| Name | Role | Responsibilities | Links |
+|------|------|-----------------|-------|
+| **Mohammed Saad Affan A.** | AI Engineer & System Architect | Designed AI pipeline, face recognition, anti-spoofing integration, system architecture | [GitHub](https://github.com/saad-affan12) \| [LinkedIn](https://www.linkedin.com/in/saad-affan-566553319) |
+| **Mohamed Hannan N** | Full Stack Developer | Developed Flask backend, API routes, UI dashboard, system integration | [GitHub](https://github.com/Hannan01-nil) \| [LinkedIn](https://www.linkedin.com/in/mohamed-hannan-9703763a0/) |
+| **Rounak Sharma** | IoT & Embedded Systems Engineer | ESP32-CAM setup, firmware development, LED/Buzzer integration, hardware communication | [GitHub](https://github.com/gh-raunil) \| [LinkedIn](https://www.linkedin.com/in/rounak-kumar-9b8260319 ) |
+
+---
+
+### 📌 Contribution Breakdown
+
+- 🧠 **AI Layer** → Face Recognition + Anti-Spoofing  
+- ⚙️ **Backend Layer** → Flask APIs + Attendance Logic  
+- 📡 **IoT Layer** → ESP32-CAM + Hardware Feedback  
+- 🌐 **Frontend Layer** → Dashboard UI  
+
+---
+
+📧 Contact:
+- mohamedhannan01@gmail.com  
+- saadaffan129@gmail.com
+- rounaksharma1221@gmail.com
 
 ---
 
