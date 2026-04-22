@@ -1,4 +1,14 @@
-# AI-Based Smart Attendance System using Face Recognition and ESP32-CAM 🚀
+# 🚀 AI Smart Attendance System (Face Recognition + IoT + Anti-Spoofing)
+
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Poppins&size=30&duration=3000&color=00F7FF&center=true&vCenter=true&width=950&lines=AI+Smart+Attendance+System;Real-Time+Face+Recognition;IoT+Powered+ESP32-CAM;Anti-Spoofing+Security;Production-Ready+Architecture" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/saad-affan12/Smart-AI-Attendance-System-IoT?style=for-the-badge"/>
+  <img src="https://img.shields.io/github/forks/saad-affan12/Smart-AI-Attendance-System-IoT?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge"/>
+</p>
 
 ## Description 📝
 
